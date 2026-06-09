@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/
+coverage/
+.vscode/
+.anchored_summary.md
+*.log
