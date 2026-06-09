@@ -1,6 +1,7 @@
 databases:
   - name: finsight-db
     plan: free
+    region: oregon
     databaseName: finsight
     user: finsight_user
 
@@ -8,9 +9,12 @@ services:
   - type: web
     name: finsight-server
     runtime: node
+    region: oregon
     plan: free
     buildCommand: cd server && npm install
     startCommand: cd server && node src/index.js
+    healthCheckPath: /health
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -25,7 +29,7 @@ services:
           property: url
       - key: CLIENT_URL
         fromService:
-          type: static
+          type: web
           name: finsight-client
           property: url
       - key: ALPHA_VANTAGE_KEY
@@ -55,10 +59,11 @@ services:
           name: finsight-db
           property: connectionString
 
-  - type: static
+  - type: web
     name: finsight-client
+    runtime: static
     buildCommand: cd client && npm install && npm run build
-    publishPath: client/dist
+    staticPublishPath: client/dist
     headers:
       - path: /*
         name: X-Frame-Options
